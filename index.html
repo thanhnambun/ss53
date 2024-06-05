@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- 
+        đồng bộ và bất đồng bộ 
+        đồng bộ     
+        bất đồng bộ 
+        js là một ngôn ngữ đơn luồng tức là chỉ chạy một luồng duy nhất 
+        khi chạy đa luồng sẽ có thể chia sẻ tài nguyên giống nhau ảnh hưởng đến logic code vì thế thư duy ban đầu của js là đơn luồng 
+        khi gặp các tác vụ cần thời gian sử lý như (chọc vào database ,dọc file ghi file trong noteJS...) thì JS sẽ o đợi các tác vụ này sử lý xong rồi mới đến tác vụ khác 
+       
+        3 cách để giải quyết bất đồng bộ 
+        c1 callBack 
+            đc truyền vào làm đối số của hàm khác 
+            hàm khác sẽ được gọi lại sau khi tác vụ hoàn thành
+        c2 promise
+        c3 async await
+     -->
+  </body>
+  <script>
+        setTimeout(() => {
+          console.log("hello");
+        }, 1000);
+        //  web API
+        console.log("1231");
+        function xinsdt() {
+          console.log("Hoàng gọi xin số ");
+          console.log("quỳnh bảo đợi ");
+          setTimeout(() => {
+            sdt = 1231564;
+            callabck(sđt);
+          }, 3000);
+          xinsdt(xinsodc);
+          function xinsodc(sđ) {
+            console.log(`hoang gọi theo số ${sđt}`);
+          }
+        }
+        function customMap(arr, callBack) {
+          let resulArr = [];
+          for (let i = 0; i < arr.length; i++) {
+            resulArr.push(callBack(arr[i]));
+          }
+          return resulArr;
+        }
+        let arr = [1, 2, 3, 4, 5];
+        console.log(customMap(arr, (item) => item * 2));
+        // ********************
+        // bt1
+        function calculate(a, b, callback) {
+          const result = a + b;
+          callback(result);
+        }
+
+        function printResult(result) {
+          console.log("Kết quả của phép tính là:", result);
+        }
+
+        const a = 5;
+        const b = 10;
+        // calculate(a, b, printResult);
+        //  bt 2
+        function delayedCallback(callback, x) {
+          setTimeout(() => {
+            callback(x);
+          }, x);
+        }
+        function timer(x) {
+          console.log(`thời gian chờ ${x}`);
+        }
+        // delayedCallback(timer, 2000);
+        // *****
+        //  bt3
+        function processArray(arr, callBack, x) {
+          for (let i = 0; i < arr.length; i++) {
+            setTimeout(() => {
+              callBack(arr[i], i);
+            }, x * i);
+          }
+        }
+        function printArr(index) {
+          console.log("phần tử thứ ", index);
+        }
+        // processArray(arr, printArr, 1000);
+        // ************* bt4
+        function displayNumbers(callabck, delay) {
+          setInterval(callabck, delay);
+        }
+
+        let number = 0;
+        const changeTime = () => {
+          number++;
+          console.log("Số thứ tự: ", number);
+        };
+
+        // displayNumbers(changeTime, 1000);
+        // ************ bt5
+        function checkCondition(condition, callback) {
+          let result = condition();
+
+          setTimeout(() => {
+            callback(result);
+          }, 1000);
+        }
+
+        function myCondition() {
+          let number = 15;
+          return number > 10;
+        }
+
+        function myCallback(result) {
+          if (result) {
+            console.log("Điều kiện đúng!");
+          } else {
+            console.log("Điều kiện sai!");
+          }
+        }
+
+        checkCondition(myCondition, myCallback);
+        // bt6
+        function task1(callback) {
+          console.log("Task 1 thực thi...");
+          setTimeout(() => {
+            console.log("Task 1.");
+            callback();
+          }, 1000);
+        }
+
+        function task2(callback) {
+          console.log("Task 2 ...");
+          setTimeout(() => {
+            console.log("Task 2 .");
+            callback();
+          }, 1500);
+        }
+
+        function task3(callback) {
+          console.log("Task 3 ...");
+          setTimeout(() => {
+            console.log("Task 3 .");
+            callback();
+          }, 2000);
+        }
+
+        function executeTasks() {
+          task1(() => {
+            task2(() => {
+              task3(() => {
+                console.log("All tasks are completed.");
+              });
+            });
+          });
+        }
+
+        executeTasks();
+        // bt7
+        function myForEach(array, callback) {
+          for (let i = 0; i < array.length; i++) {
+            callback(array[i], i, array);
+          }
+        }
+
+        const myArray = [10, 20, 30, 40, 50];
+
+        myForEach(myArray, (element, index, array) => {
+          console.log(`Element: ${element}, Index: ${index}, Array: [${array}]`);
+        });
+        // bt8
+        function myFind(array, valueToFind, callback) {
+          for (let i = 0; i < array.length; i++) {
+            if (callback(array[i], valueToFind)) {
+              return { element: array[i], array: array };
+            }
+          }
+          return null;
+        }
+
+        // Ví dụ sử dụng
+
+        function isEqual(element, valueToFind) {
+          return element === valueToFind;
+        }
+
+        const result = myFind(myArray, 30, isEqual);
+
+        if (result) {
+          console.log(`Element found: ${result.element}, Array: [${result.array}]`);
+        } else {
+          console.log("Element not found.");
+        }
+        // bt9
+        function myFilter(array, valueToFind, callback) {
+          let resultArray = [];
+          for (let i = 0; i < array.length; i++) {
+            if (callback(array[i], valueToFind)) {
+              resultArray.push(array[i]);
+            }
+          }
+          return { elements: resultArray, array: array };
+        }
+
+        function isEqual(element, valueToFind) {
+          return element === valueToFind;
+        }
+
+        const result2 = myFilter(myArray, 30, isEqual);
+
+        if (result2elements.length > 0) {
+          console.log(
+            `Elements : [${result2.elements}], Array: [${result2.array}]`
+          );
+        } else {
+          console.log("o tìm thấy .");
+        }
+        // bt10
+        function myFindIndex(array, valueToFind, callback) {
+        for (let i = 0; i < array.length; i++) {
+            if (callback(array[i], valueToFind)) {
+                return { index: i, array: array };
+            }
+        }
+        return { index: -1, array: array };
+    }
+
+
+    function isEqual(element, valueToFind) {
+        return element === valueToFind;
+    }
+
+    const result1 = myFindIndex(myArray, 30, isEqual);
+
+    if (result.index !== -1) {
+        console.log(`Element found at index: ${result1.index}, Array: [${result1.array}]`);
+    } else {
+        console.log("Element not found.");
+    }
+  </script>
+</html>
